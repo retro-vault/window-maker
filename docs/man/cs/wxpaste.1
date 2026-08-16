@@ -1,0 +1,40 @@
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.TH wxpaste 1 "Březen 1998"
+.SH JMÉNO
+wxpaste \- zapíše vyrovnávací paměť na standardní výstup
+.SH SYNTAXE
+.B wxpaste
+[volby]
+.SH POPIS
+.B wxpaste
+vypíše obsah dané vyrovnávací paměti na standardní výstup. Jakmile není
+zadána žádná vyrovnávací paměť, tak se použije vyrovnávací paměť 0.
+.PP
+.SH VOLBY
+.TP
+.B \-cutbuffer číslo
+Data budou vložena z dané vyrovnávací paměti namísto standardní 0.
+.TP
+.B \-display displej
+Data se budou kopírovat z vyrovnávací paměti daného displeje/obrazovky.
+.TP
+.B \-selection [selekcia]
+Data budou kopírované z dané selekce. Jakmile se výběr ze selekce nepodaří,
+tak se použije vyrovnávací paměť. Implicitní hodnota pro selekci je PRIMARY.
+.PP
+.SH CHYBY
+\-selection musí být poslední volba. Syntaxe může být upravená, ale
+brání tomu špatná kompatibilita.
+
+Typy selekcí INCR a MULTIPLE nejsou podporované. Ve skutečnosti je
+podporovaný jen jednoduchý text, což by mělo stačit pro většinu uživatelů
+takovéto jednoduché utilitky.
+.SH PODÍVEJTE SE TAKÉ
+.BR wxcopy (1),
+.BR wmaker (1)
+.SH AUTOR
+Autorem Window Makera je Alfredo K. Kojima <kojima@windowmaker.info>.
+.PP
+Tuto manuálovou stránku napsal Marcelo Magallon <mmagallo@debian.org>.
+.PP
+Do češtiny přeložil Jiří Hnídek <jiri.hnidek@vslib.cz>.

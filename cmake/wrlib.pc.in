@@ -1,0 +1,9 @@
+prefix=@WM_PREFIX@
+libdir=@WM_LIBDIR@
+includedir=@WM_INCLUDEDIR@
+
+Name: wrlib
+Description: Image manipulation and conversion library
+Version: @PROJECT_VERSION@
+Libs: -L${libdir} -lwraster
+Cflags: -I${includedir}

@@ -1,0 +1,39 @@
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.TH wdwrite 1 "Leden 1999"
+.SH JMÉNO
+wdwrite \- zapíše klíče a hodnoty do databáze standardních nastavení
+.SH SYNTAXE
+.B wdwrite
+.I doména
+.I volba
+.I hodnota
+.SH POPIS
+.B wdwrite
+zapíše
+.I volbu
+a
+.I hodnotu
+do dané
+.I domény.
+.SH VOLBY
+.TP
+.B \-\-help
+vypíše nápovědu
+.TP
+.B \-\-version
+vypíše číslo verze
+.SH PROMĚNNÉ PROSTŘEDÍ
+.IP WMAKER_USER_ROOT
+specifikuje cestu k adresáři Defaults. Řetězec "Defaults/" je přidán k této
+proměnné, čímž se určí umístění databází. Jakmile proměnná není nastavená,
+tak její implicitní hodnota je "~/GNUstep"
+.SH SOUBORY
+Domény se nacházejí v WMAKER_USER_ROOT/Defaults/
+.SH PODÍVEJTE SE TAKÉ
+.BR wmaker (1)
+.SH AUTOR
+Autorem Window Makera je Alfredo K. Kojima <kojima@windowmaker.info>.
+.PP
+Tuto manuálovou stránku napsal Marcelo Magallon <mmagallo@debian.org>.
+.PP
+Do češtiny přeložil Jiří Hnídek <jiri.hnidek@vslib.cz>

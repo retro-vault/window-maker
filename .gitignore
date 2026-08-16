@@ -1,0 +1,10 @@
+# CMake build tree and staged output
+/build/
+/bin/
+
+# Private GNUstep tree used by the nested development session
+/.wmaker-home/
+
+# Session state left by .vscode/wmaker-session-*.sh
+/.vscode/.wmaker-*.pid
+/.vscode/*.log

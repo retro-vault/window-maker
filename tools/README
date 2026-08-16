@@ -1,0 +1,72 @@
+Command-line companions to Window Maker, grouped by what they act on.
+
+
+config/ - reading and modifying Window Maker's configuration
+=============================================================
+
+wdwrite       write data into the defaults database (configuration files)
+
+wdread        read simple data from the defaults database (for use in
+              scripts, for example)
+
+getstyle      get the current style settings and save them into a file, or
+              create a theme pack
+
+setstyle      load style settings from a style file and set up Window Maker
+
+convertfonts  rewrite the font specifications in a style file to the
+              fontconfig syntax
+
+geticonset    output the current set of icon assignments; good for making
+              themes
+
+seticons      merge icon definitions into the WMWindowAttributes file
+
+
+menu/ - generating root menus
+==============================
+
+wmgenmenu     generate a menu from the applications found on the system
+
+wmmenugen     generate a menu from XDG .desktop files or wm-config data
+
+
+desktop/ - command-line clients acting on a running X session
+==============================================================
+
+(The graphical programs that used to live here, wmagnify and wmiv, are
+applications and now live in src/apps/.)
+
+wmsetbg       set the workspace background to an image and make it persist
+              between sessions
+
+wxcopy        copy an input file or stdin into the X cut buffer
+
+wxpaste       copy the content of the X cut buffer to stdout
+
+
+scripts/ - shell and Perl helpers
+==================================
+
+Installed alongside the compiled tools:
+
+wmaker.inst      quick and dirty script to install the necessary files from
+                 the global configuration into a user's directory; the
+                 build patches the configured paths into it
+
+wm-oldmenu2new   convert between the plain text menu format and the property
+                 list menu format
+
+wkdemenu.pl      convert a KDE menu into a Window Maker menu (for pipe)
+
+Run from the source tree, not installed:
+
+bughint          gather system information for a bug report
+
+checkpatch.pl    coding-style checker for patches; see
+                 docs/development/submitting-patches.txt
+
+update-changelog.pl  regenerate docs/development/ChangeLog from git history
+
+
+po/ - translations for the messages these tools print

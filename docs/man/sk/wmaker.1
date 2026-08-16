@@ -1,0 +1,146 @@
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.TH "Window Maker" 1 "August 1998"
+.SH MENO
+wmaker \- manažér okien pre X11 so vzhľadom NEXTSTEP
+.SH SYNTAX
+.B wmaker
+.I "[-voľby]"
+.SH "POPIS"
+Window Maker je manažér okien pre X11 so vzhľadom NEXTSTEP. Snaží sa
+napodobniť vzhľad NeXT ako je to len možné, ale v prípade potreby tento
+trend nedodržuje.
+.SH "VOĽBY"
+.TP
+.B \-\-no\-cpp
+zakázať preprocessing konfiguračných súborov
+.TP
+.B \-\-no\-dock
+neotvárať Dok aplikácií
+.TP
+.B \-\-no\-clip
+neotvárať Spinku pracovných plôch
+.TP
+.B \-display host:display.screen
+použiť daný display.
+Na strojoch s viacerými obrazovkami bude Window Maker automaticky spravovať
+všetky obrazovky. Ak chcete, aby Window Maker spravoval len špecifickú
+obrazovku, musíte zadať číslo obrazovky pomocou argumentu príkazového riadku
+.B \-display.
+Napríklad, ak chcete, aby Window Maker spravoval len obrazovku 1, spustite ho
+takto:
+.B wmaker -display :0.1
+.TP
+.B \-\-version
+vypíše verziu a ukončí sa
+.TP
+.B \-\-visual\-id
+určenie čísla obrazového režimu. Viď
+.BR xdpyinfo (1)
+pre zoznam obrazových režimov dostupných na vašom display-i.
+.TP
+.B \-\-help
+vypíše krátky pomocný text
+.PP
+.SH SÚBORY
+.TP
+.B ~/GNUstep/Defaults/WindowMaker
+všeobecné nastavenia Window Makera.
+.TP
+.B ~/GNUstep/Defaults/WMState
+informácie o Doku a Spinke. NEeditujte za behu Window Makeru. Bude
+prepísaný.
+.TP
+.B ~/GNUstep/Defaults/WMRootMenu
+Obsahuje meno súboru, z ktorého sa má načítať hlavné menu alebo
+menu samotné vo formáte proplist.
+.TP
+.B ~/GNUstep/Defaults/WMWindowAttributes
+Atribúty pre rôzne triedy a inštancie aplikácií. Použite editor nastavení
+(ťahajte pravé tlačítko na hornej lište aplikácie, zvoľte Nastavenia)
+namiesto priameho editovania tohto súboru. Je len málo nastavení, ktoré
+nie sú dostupné z editora nastavení.
+.TP
+.B /usr/share/WindowMaker/Defaults/
+Všetky spomenuté súbory sa NAČÍTAJÚ odtiaľto ak sa nepodarí nájsť ich,
+okrem WMState, ktorý sa odtiaľto SKOPÍRUJE. Nezáleží na tom, odkiaľ
+sú načítané, ak je potrebné zapísať zmenu konfigurácie späť do týchto
+súborov, zapíšu sa do užívateľských súborov.
+.TP
+.B ~/GNUstep/Library/WindowMaker/autostart
+Tento skript sa automaticky vykoná pri štarte Window Makera.
+.TP
+.B ~/GNUstep/Library/WindowMaker/exitscript
+Tento skript sa automaticky vykoná bezprostredne pred ukončením Window Makera.
+.B Poznámka:
+Ak potrebujete spustiť z tohto skriptu niečo, čo vyžaduje spustený X server,
+nepoužívajte na ukončenie Window Makera príkaz
+.I SHUTDOWN
+z hlavného menu. Inak sa môže stať, že X server sa ukončí skôr než sa vykoná
+skript.
+.TP
+.B ~/GNUstep/Library/WindowMaker/
+Súbor menu, ktorého názov je vo WMRootMenu, sa hľadá tu...
+.TP
+.B /etc/X11/WindowMaker/
+a tu, v tomto poradí, pokiaľ nie je názov absolútna cesta.
+.TP
+.B ~/GNUstep/Library/WindowMaker/Pixmaps/
+Tu hľadá Window Maker obrázky
+.TP
+.B ~/GNUstep/Library/WindowMaker/Backgrounds/
+Tu hľadá Window Maker pozadia
+.TP
+.B ~/GNUstep/Library/WindowMaker/Styles/
+Tu hľadá Window Maker súbory so štýlmi (nie celkom... vyzerá to tak, ale
+aj tak musíte zadať úplnú cestu. Je to len vyhradené miesto, aby boli
+veci pekne usporiadané)
+.TP
+.B ~/GNUstep/Library/WindowMaker/Themes/
+Tu hľadá Window Maker súbory s témami (viď vyššie)
+.TP
+.B /usr/share/WindowMaker/Pixmaps/
+Obrázky spoločné pre celý systém sa nachádzajú tu...
+.TP
+.B /usr/share/WindowMaker/Pixmaps/
+a tu.
+.TP
+.B /usr/share/WindowMaker/Styles/
+Štýly spoločné pre celý systém sa nachádzajú tu
+.TP
+.B /usr/share/WindowMaker/Themes/
+Teraz to skús sám... ;-)
+.SH PREMENNÉ PROSTREDIA
+.IP WMAKER_USER_ROOT
+špecifikuje cestu k adresáru Defaults. "Defaults/" je pridané k tejto
+premennej, čím sa určí umiestnenie databáz. Ak premenná nie je nastavená,
+jej implicitná hodnota je "~/GNUstep"
+.IP GNUSTEP_LOCAL_ROOT
+špecifikuje umiestnenie systémového \fBlokálneho\fP GNUstep adresára (toto
+je užitočné v prípade, že umiestnenie adresára spoločného pre celý systém je
+v skutočnosti spoločné pre celú sieť). Ak je táto premenná prázdna, použije
+sa GNUSTEP_SYSTEM_ROOT.
+.IP GNUSTEP_SYSTEM_ROOT
+špecifikuje umiestnenie systémového GNUstep adresára. Ak je táto premenná
+prázdna, jej implicitná hodnota je /etc/GNUstep
+.SH POZRI TIEŽ
+The Window Maker User Guide
+.PP
+The Window Maker FAQ
+.PP
+.BR X (7),
+.BR wdwrite (1),
+.BR wxcopy (1),
+.BR geticonset (1),
+.BR seticons (1),
+.BR wmaker (1),
+.BR wxpaste (1),
+.BR getstyle (1),
+.BR setstyle (1),
+.BR wmsetbg (1)
+.SH AUTOR
+Autormi Window Makera sú Alfredo K. Kojima <kojima@windowmaker.info>,
+Dan Pascu <dan@windowmaker.info> s pomocou mnohých ľudí z celého Internetu.
+.PP
+Túto manuálovú stránku napísal Marcelo E. Magallon, <mmagallo@debian.org>.
+
+

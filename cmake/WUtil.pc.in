@@ -1,0 +1,9 @@
+prefix=@WM_PREFIX@
+libdir=@WM_LIBDIR@
+includedir=@WM_INCLUDEDIR@
+
+Name: WUtil
+Description: Utility library for WINGs
+Version: @PROJECT_VERSION@
+Libs: -L${libdir} -lWUtil
+Cflags: -I${includedir}

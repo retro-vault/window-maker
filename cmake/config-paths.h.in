@@ -1,0 +1,27 @@
+/* this is a generated file - do not edit */
+
+#ifndef WMAKER_CMAKE_CONFIG_PATHS_H
+#define WMAKER_CMAKE_CONFIG_PATHS_H
+
+/* define where the translations are stored */
+#define LOCALEDIR "@WM_LOCALEDIR@"
+
+/* define an extra path for pixmaps */
+#define PIXMAPDIR "@WM_PIXMAPDIR@"
+
+/* where shared data is stored */
+#define PKGDATADIR "@WM_PKGDATADIR@"
+
+/* where the global defaults are stored */
+#define PKGCONFDIR "@WM_PKGCONFDIR@"
+
+/* where the user data root is located */
+#define GSUSER_SUBDIR "GNUstep"
+
+/* where the user defaults are stored */
+#define DEFAULTS_SUBDIR "Defaults"
+
+/* where the user data are stored */
+#define USERDATA_SUBDIR "Library"
+
+#endif /* WMAKER_CMAKE_CONFIG_PATHS_H */

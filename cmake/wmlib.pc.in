@@ -1,0 +1,10 @@
+prefix=@WM_PREFIX@
+libdir=@WM_LIBDIR@
+includedir=@WM_INCLUDEDIR@
+
+Name: wmlib
+Description: Window Maker interface definitions
+Version: @PROJECT_VERSION@
+Requires: x11
+Libs: -L${libdir} -lWMaker
+Cflags: -I${includedir}

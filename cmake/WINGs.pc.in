@@ -1,0 +1,10 @@
+prefix=@WM_PREFIX@
+libdir=@WM_LIBDIR@
+includedir=@WM_INCLUDEDIR@
+
+Name: WINGs
+Description: Small widget set with the NeXTStep(TM) look and feel
+Version: @PROJECT_VERSION@
+Requires: wrlib WUtil
+Libs: -L${libdir} -lWINGs
+Cflags: -I${includedir}

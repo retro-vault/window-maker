@@ -1,0 +1,125 @@
+{
+  "version": "0.2.0",
+  "inputs": [
+    {
+      "id": "wingsApp",
+      "type": "pickString",
+      "description": "Which WINGs program should run under the debugger?",
+      "default": "wtest",
+      "options": [
+        "wtest",
+        "wmquery",
+        "wmfile",
+        "testmywidget",
+        "fontl",
+        "puzzle",
+        "colorpick",
+        "wmagnify",
+        "wmiv"
+      ]
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Debug wmaker (Xephyr)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/bin/wmaker",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        { "name": "DISPLAY", "value": ":3" },
+        { "name": "PATH", "value": "${workspaceFolder}/bin/bin:${env:PATH}" },
+        { "name": "LD_LIBRARY_PATH", "value": "${workspaceFolder}/bin/lib:${env:LD_LIBRARY_PATH}" },
+        { "name": "WMAKER_USER_ROOT", "value": "${workspaceFolder}/.wmaker-home/GNUstep" }
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "prepare wmaker debug",
+      "postDebugTask": "wmaker: stop session",
+      "additionalSOLibSearchPath": "${workspaceFolder}/bin/lib",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Window Maker uses SIGTERM/SIGINT for its own shutdown handling",
+          "text": "handle SIGTERM nostop noprint pass",
+          "ignoreFailures": true
+        }
+      ]
+    },
+
+    {
+      "name": "Debug WPrefs (WINGs app)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/bin/WPrefs",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        { "name": "DISPLAY", "value": ":3" },
+        { "name": "PATH", "value": "${workspaceFolder}/bin/bin:${env:PATH}" },
+        { "name": "LD_LIBRARY_PATH", "value": "${workspaceFolder}/bin/lib:${env:LD_LIBRARY_PATH}" },
+        { "name": "WMAKER_USER_ROOT", "value": "${workspaceFolder}/.wmaker-home/GNUstep" }
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "prepare WINGs app debug",
+      "postDebugTask": "wmaker: stop session",
+      "additionalSOLibSearchPath": "${workspaceFolder}/bin/lib",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Do not stop when the watchdog tears the session down",
+          "text": "handle SIGTERM nostop noprint pass",
+          "ignoreFailures": true
+        }
+      ]
+    },
+
+    {
+      "name": "Debug WINGs app (pick)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/bin/${input:wingsApp}",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        { "name": "DISPLAY", "value": ":3" },
+        { "name": "PATH", "value": "${workspaceFolder}/bin/bin:${env:PATH}" },
+        { "name": "LD_LIBRARY_PATH", "value": "${workspaceFolder}/bin/lib:${env:LD_LIBRARY_PATH}" },
+        { "name": "WMAKER_USER_ROOT", "value": "${workspaceFolder}/.wmaker-home/GNUstep" }
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "prepare WINGs app debug",
+      "postDebugTask": "wmaker: stop session",
+      "additionalSOLibSearchPath": "${workspaceFolder}/bin/lib",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Do not stop when the watchdog tears the session down",
+          "text": "handle SIGTERM nostop noprint pass",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.TH wmsetbg 1 "January 1999"
+.SH MENO
+wmsetbg \- nastaví pozadie hlavného okna v X11
+.SH SYNTAX
+.B wmsetbg
+[\-display] [\-\-version] [\-\-help] [{\-b|\-\-back\-color} \fIfarba\fP]
+[{\-t|\-\-tile}|{\-e|\-\-center}|{\-s|\-\-scale}|{\-a|\-\-maxscale} \fIobrázok\fP]
+[{\-d|\-\-dither}|{\-m|\-\-match}] [\-u|\-\-update\-wmaker]
+[{\-D|\-\-update\-domain} \fIdoména\fP] [{\-c|\-\-colors} \fIcpc\fP]
+[{\-p|\-\-parse} \fItextúra\fP] [{\-w|\-\-workspace} \fIpracovná plocha\fP]
+.SH POPIS
+.B wmsetbg
+načíta daný
+.I obrázok
+(XPM, PNG, jpeg, Tiff, raw PPM) a vloží ho do hlavného okna. Obrázok možno
+zväčšiť, alebo ho opakovať aby vyplnil hlavné okno. Window Maker používa
+tento príkaz interne na nastavenie pozadia pri štarte.
+.SH VOĽBY
+.TP
+.B \-a|\-\-maxscale
+zväčší daný \fIobrázok\fP pri dodržaní pomeru strán
+.TP
+.B \-e|\-\-center
+vloží \fIobrázok\fP do stredu okna
+.TP
+.B \-t|\-\-tile
+vytvára z \fIobrázku\fP dlaždice
+.TP
+.B \-s|\-\-scale
+roztiahne daný \fIobrázok\fP (štandardne)
+.TP
+.B \-d|\-\-dither
+rezervuje farby
+.TP
+.B \-m|\-\-match
+zhodné farby
+.TP
+.B \-u|\-\-update\-wmaker
+zapíše zmenu do databázy nastavení Window Makera
+.TP
+.B \-D|\-\-update\-domain
+zapíše zmenu do databázy \fIdoména\fP
+.TP
+.B \-c|\-\-colors
+použiť počet farieb na kanál
+.TP
+.B \-p|\-\-parse
+parsuje danú \fItextúru\fP ako \fIproplist style textúru\fP
+.TP
+.B \-w|\-\-workspace
+nastaví pozadie len na danej \fIpracovnej ploche\fP
+.TP
+.B \-\-help
+vypíše pomocný text
+.TP
+.B \-\-version
+vypíše číslo verzie
+.SH POZRI TIEŽ
+.BR wmaker (1)
+.SH AUTOR
+Autorom Window Makera je Alfredo K. Kojima <kojima@windowmaker.info>.
+wmsetbg napísal Dan Pascu <dan@windowmaker.info>
+.PP
+Túto manuálovú stránku napísal Marcelo Magallon <mmagallo@debian.org>.
+

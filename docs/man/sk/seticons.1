@@ -1,0 +1,36 @@
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.TH seticons 1 "March 1998"
+.SH MENO
+seticons \- nastaví obrázky ikon pre Window Maker
+.SH SYNTAX
+.B seticons
+.I súbor
+.SH POPIS
+.B seticons
+načíta
+.I súbor
+a zapíše jeho obsah do domény WMWindowAttributes, čím sa nastavia ikony,
+ktoré používa Window Maker pre dané triedy (napríklad XTerm, "xterm.XTerm",
+"pine.XTerm", atď.)
+.SH VOĽBY
+.TP
+.B \-\-help
+vypíše pomocný text
+.TP
+.B \-\-version
+vypíše číslo verzie
+.SH PREMENNÉ PROSTREDIA
+.IP WMAKER_USER_ROOT
+špecifikuje cestu k adresáru Defaults. "Defaults/" je pridané k tejto
+premennej, čím sa určí umiestnenie databáz. Ak premenná nie je nastavená,
+jej implicitná hodnota je "~/GNUstep"
+.SH SÚBORY
+.IP WMAKER_USER_ROOT/Defaults/WMWindowAttributes
+Toto je súbor, ktorý sa zapíše.
+.SH POZRI TIEŽ
+.BR geticonset (1),
+.BR wmaker (1)
+.SH AUTOR
+Autorom Window Makera je Alfredo K. Kojima <kojima@windowmaker.info>.
+.PP
+Túto manuálovú stránku napísal Marcelo Magallon <mmagallo@debian.org>.
