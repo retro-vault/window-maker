@@ -126,37 +126,47 @@ source ./bin/use-wmaker.sh
 That also sets `WMAKER_USER_ROOT` to `<repo>/.wmaker-home/GNUstep`, so
 experiments never touch your real `~/GNUstep`.
 
-## Running in Xephyr
+## VS Code: F5 with Docker and Xephyr
+
+Install host CMake, Docker, and the VS Code Microsoft C/C++ extension. Your
+Linux desktop must provide a local X11 or Xwayland display through `DISPLAY`
+and, when required, `XAUTHORITY`. No host compiler, debugger, or Xephyr is needed.
+
+There is one F5 configuration: **Window Maker (Docker + Xephyr)**. It runs host
+CMake to configure a Debug build, builds all repository libraries (wraster,
+WINGs, WUtil, WMaker), Window Maker, WPrefs, utilities and examples with tools
+from `wischner/gcc-x86_64-linux-x11`, starts that image's Xephyr, and launches
+Window Maker under that image's GDB. Breakpoints work at the original source
+paths. Stop debugging removes the container and its session processes.
+
+The default build task uses the same Docker build without opening Xephyr.
+Equivalent commands from the repository root:
 
 ```bash
-./.vscode/wmaker-session-start.sh      # Xephyr on :3 + wmaker + watchdog
-DISPLAY=:3 ./bin/bin/wtest             # any WINGs program
-./.vscode/wmaker-session-stop.sh
+./.vscode/wmaker-docker.sh build
+./.vscode/wmaker-docker.sh prepare
+./.vscode/wmaker-docker.sh stop
 ```
 
-The first start runs `wmaker.inst --batch` to populate the private GNUstep
-tree. `WMAKER_DISPLAY` and `WMAKER_SCREEN` override the display and geometry.
+The first build caches the image's headers and libraries under
+`build/docker/sysroot` for host CMake's dependency discovery (about 1.2 GB).
+The cache refreshes when the local image ID changes. Compiler probes and build
+tools execute inside Docker; host CMake's modules are mounted read-only for
+compiler probes. Build files and `compile_commands.json` live in
+`build/docker/cmake`; staged artifacts remain in `bin/`. Pull the image with
+`docker pull wischner/gcc-x86_64-linux-x11` when you want to update it.
 
-`--xephyr-only` starts the nested server without a window manager — that is
-what you want when `wmaker` itself is the program under the debugger.
+Xephyr uses a separate display (`:3` by default), with private Window Maker
+settings in `.wmaker-home/GNUstep`. Set `WMAKER_DISPLAY` and `WMAKER_SCREEN`
+in VS Code's environment to override the nested display and screen size.
+The session mounts the host display socket and Xauthority read-only so
+Xephyr can open its window; it uses Docker's default networking and security.
+The host and nested display numbers must differ. Closing Xephyr ends debugging.
+Logs are in `build/docker/xephyr.log` and `build/docker/wmaker-inst.log`.
 
-The watchdog terminates any staged application still running on that display
-(and the `gdb` that launched it) when the window manager or Xephyr goes away,
-so a closed session cannot leave the IDE waiting on a debug session forever.
-
-## VS Code
-
-`.vscode/tasks.json` and `.vscode/launch.json` wire the above up:
-
-- **build** (default build task) — configure + build
-- **wmaker: start / stop session** — the nested session
-- **wmaker: reset user configuration** — delete `.wmaker-home`
-- **Debug wmaker (Xephyr)** — Xephyr only, `wmaker` under gdb
-- **Debug WPrefs (WINGs app)** — full session, WPrefs under gdb
-- **Debug WINGs app (pick)** — full session, pick from `wtest`, `wmquery`,
-  `wmfile`, `testmywidget`, `fontl`, `puzzle`, `colorpick`, `wmagnify`, `wmiv`
-
-`compile_commands.json` is exported into `build/` for clangd/IntelliSense.
+Optional formats and translations depend on what the image provides. In
+particular, translations are disabled when the image has no `msgfmt`.
+Do not run host and Docker builds concurrently: both stage into `bin/`.
 
 ## Developing against WINGs
 

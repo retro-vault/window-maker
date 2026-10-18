@@ -2,73 +2,39 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "configure",
-      "type": "shell",
-      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug",
+      "label": "wmaker: build Docker",
+      "type": "process",
+      "command": "${workspaceFolder}/.vscode/wmaker-docker.sh",
+      "args": [
+        "build"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "wmaker: prepare Docker",
+      "type": "process",
+      "command": "${workspaceFolder}/.vscode/wmaker-docker.sh",
+      "args": [
+        "prepare"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "wmaker: stop Docker",
+      "type": "process",
+      "command": "${workspaceFolder}/.vscode/wmaker-docker.sh",
+      "args": [
+        "stop"
+      ],
       "problemMatcher": []
-    },
-    {
-      "label": "build",
-      "type": "shell",
-      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j\"$(nproc)\"",
-      "problemMatcher": ["$gcc"],
-      "group": { "kind": "build", "isDefault": true }
-    },
-    {
-      "label": "build wmaker (Debug)",
-      "type": "shell",
-      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build --target wmaker -j\"$(nproc)\"",
-      "problemMatcher": ["$gcc"]
-    },
-    {
-      "label": "build WINGs (Debug)",
-      "type": "shell",
-      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build --target WINGs WUtil wraster -j\"$(nproc)\"",
-      "problemMatcher": ["$gcc"]
-    },
-    {
-      "label": "clean",
-      "type": "shell",
-      "command": "rm -rf build bin",
-      "problemMatcher": []
-    },
-
-    {
-      "label": "wmaker: start session",
-      "type": "shell",
-      "command": "${workspaceFolder}/.vscode/wmaker-session-start.sh",
-      "problemMatcher": []
-    },
-    {
-      "label": "wmaker: start Xephyr only",
-      "type": "shell",
-      "command": "${workspaceFolder}/.vscode/wmaker-session-start.sh --xephyr-only",
-      "problemMatcher": []
-    },
-    {
-      "label": "wmaker: stop session",
-      "type": "shell",
-      "command": "${workspaceFolder}/.vscode/wmaker-session-stop.sh",
-      "problemMatcher": []
-    },
-    {
-      "label": "wmaker: reset user configuration",
-      "type": "shell",
-      "command": "rm -rf ${workspaceFolder}/.wmaker-home && echo 'Private GNUstep tree removed; it will be recreated on the next session start.'",
-      "problemMatcher": []
-    },
-
-    {
-      "label": "prepare wmaker debug",
-      "type": "shell",
-      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j\"$(nproc)\" && ${workspaceFolder}/.vscode/wmaker-session-start.sh --xephyr-only",
-      "problemMatcher": ["$gcc"]
-    },
-    {
-      "label": "prepare WINGs app debug",
-      "type": "shell",
-      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j\"$(nproc)\" && ${workspaceFolder}/.vscode/wmaker-session-start.sh",
-      "problemMatcher": ["$gcc"]
     }
   ]
 }
