@@ -347,6 +347,7 @@ WScreen *wScreenForWindow(Window window);   /* slower than above functions */
 
 void wScreenFinish(WScreen *scr);
 void wScreenUpdateUsableArea(WScreen *scr);
+void wScreenUpdateGeometry(WScreen *scr);
 
 void create_logo_image(WScreen *scr);
 #endif

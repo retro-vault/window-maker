@@ -47,6 +47,7 @@
 #include "pixmap.h"
 #include "menu.h"
 #include "window.h"
+#include "framewin.h"
 #include "main.h"
 #include "actions.h"
 #include "properties.h"
@@ -68,7 +69,7 @@
 #include "defaults.h"
 
 #define EVENT_MASK (LeaveWindowMask|EnterWindowMask|PropertyChangeMask\
-    |SubstructureNotifyMask|PointerMotionMask \
+    |StructureNotifyMask|SubstructureNotifyMask|PointerMotionMask \
     |SubstructureRedirectMask|ButtonPressMask|ButtonReleaseMask\
     |KeyPressMask|KeyReleaseMask)
 
@@ -670,7 +671,7 @@ WScreen *wScreenInit(int screen_number)
 
 #ifdef USE_RANDR
 	if (w_global.xext.randr.supported)
-		XRRSelectInput(dpy, scr->root_win, RRScreenChangeNotifyMask);
+		XRRSelectInput(dpy, scr->root_win, RRScreenChangeNotifyMask | RRCrtcChangeNotifyMask | RROutputChangeNotifyMask);
 #endif
 
 	XSync(dpy, False);
@@ -808,6 +809,100 @@ WScreen *wScreenInit(int screen_number)
 	wScreenUpdateUsableArea(scr);
 
 	return scr;
+}
+
+/* Refresh every geometry consumer together, including pointer hit testing. */
+void wScreenUpdateGeometry(WScreen *scr)
+{
+	XWindowAttributes attr;
+	WWindow *wwin;
+	WXineramaInfo old_heads;
+	WDrawerChain *drawer;
+	int old_width, old_height;
+	int i;
+
+	if (!scr || !XGetWindowAttributes(dpy, scr->root_win, &attr))
+		return;
+	if (attr.width <= 0 || attr.height <= 0)
+		return;
+
+	old_width = scr->scr_width;
+	old_height = scr->scr_height;
+	old_heads = scr->xine_info;
+	scr->xine_info.screens = NULL;
+	scr->scr_width = attr.width;
+	scr->scr_height = attr.height;
+	/* Keep Xlib and WINGs geometry in sync even without RandR. */
+	ScreenOfDisplay(dpy, scr->screen)->width = attr.width;
+	ScreenOfDisplay(dpy, scr->screen)->height = attr.height;
+	scr->wmscreen->rootView->size.width = attr.width;
+	scr->wmscreen->rootView->size.height = attr.height;
+
+	wInitXinerama(scr);
+	/* RandR often sends several notifications for the same final layout. */
+	i = old_width == attr.width && old_height == attr.height &&
+	    old_heads.count == scr->xine_info.count &&
+	    old_heads.primary_head == scr->xine_info.primary_head &&
+	    (!old_heads.count || !memcmp(old_heads.screens, scr->xine_info.screens,
+	                               old_heads.count * sizeof(WMRect)));
+	if (old_heads.screens)
+		wfree(old_heads.screens);
+	if (i)
+		return;
+	wfree(scr->usableArea);
+	wfree(scr->totalUsableArea);
+	scr->usableArea = wmalloc(sizeof(WArea) * wXineramaHeads(scr));
+	scr->totalUsableArea = wmalloc(sizeof(WArea) * wXineramaHeads(scr));
+	if (scr->dock)
+		wDockUpdateGeometry(scr->dock);
+	for (i = 0; i < scr->workspace_count; i++) {
+		if (scr->workspaces[i]->clip)
+			wDockUpdateGeometry(scr->workspaces[i]->clip);
+	}
+	for (drawer = scr->drawers; drawer; drawer = drawer->next)
+		wDockUpdateGeometry(drawer->adrawer);
+	wScreenUpdateUsableArea(scr);
+	wNETWMUpdateDesktop(scr);
+	wNETWMUpdateWorkarea(scr);
+
+	for (wwin = scr->focused_window; wwin; wwin = wwin->prev) {
+		int head = wGetHeadForWindow(wwin);
+		WMRect rect = wGetRectForHead(scr, head);
+		int x, y;
+
+		if (wwin->flags.fullscreen) {
+			if (wwin->flags.fullscreen_monitors[0] >= 0) {
+				int monitor;
+				Bool valid = True;
+				for (i = 0; i < 4; i++) {
+					monitor = wwin->flags.fullscreen_monitors[i];
+					if (monitor < 0 || monitor >= scr->xine_info.count)
+						valid = False;
+				}
+				if (valid) {
+					rect = wGetRectForHead(scr, wwin->flags.fullscreen_monitors[0]);
+					for (i = 1; i < 4; i++) {
+						WMRect other = wGetRectForHead(scr, wwin->flags.fullscreen_monitors[i]);
+						wGetRectUnion(&rect, &other, &rect);
+					}
+				} else {
+					/* A monitor referenced by the client was removed. */
+					wwin->flags.fullscreen_monitors[0] = -1;
+				}
+			}
+			wWindowConfigure(wwin, rect.pos.x, rect.pos.y,
+			                 rect.size.width, rect.size.height);
+		} else if (wwin->flags.maximized) {
+			wMaximizeWindow(wwin, wwin->flags.maximized | MAX_KEYBOARD, head);
+		} else {
+			x = WMAX(rect.pos.x, WMIN(wwin->frame_x,
+			         rect.pos.x + (int)rect.size.width - wwin->frame->core->width));
+			y = WMAX(rect.pos.y, WMIN(wwin->frame_y,
+			         rect.pos.y + (int)rect.size.height - wwin->frame->top_width));
+			if (x != wwin->frame_x || y != wwin->frame_y)
+				wWindowMove(wwin, x, y);
+		}
+	}
 }
 
 void wScreenUpdateUsableArea(WScreen *scr)

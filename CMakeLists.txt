@@ -137,7 +137,7 @@ option(WMAKER_XDND         "Support drag-and-drop onto the dock"           ON)
 option(WMAKER_MODELOCK     "Support XKB language modelock"                 OFF)
 option(WMAKER_WMREPLACE    "Support the ICCCM window-manager replace protocol" OFF)
 option(WMAKER_USERMENU     "Support per-application user menus"            OFF)
-option(WMAKER_RANDR        "Use the RandR extension"                       OFF)
+option(WMAKER_RANDR        "Use the RandR extension"                       ON)
 option(WMAKER_PANGO        "Use Pango for text layout in WINGs"            OFF)
 option(WMAKER_NLS          "Compile and install translations"              ON)
 

@@ -168,6 +168,18 @@ Optional formats and translations depend on what the image provides. In
 particular, translations are disabled when the image has no `msgfmt`.
 Do not run host and Docker builds concurrently: both stage into `bin/`.
 
+To verify interactive Xephyr resizing after a build, run the isolated regression:
+
+```bash
+docker run --rm -v "$PWD:$PWD" -w "$PWD" --entrypoint bash \
+  wischner/gcc-x86_64-linux-x11 tools/tests/xephyr-resize.sh
+```
+
+It repeatedly resizes Xephyr's outer window and checks the work area, titlebar
+dragging and root-menu placement with mouse input through the host X server.
+Changing resolution with `xrandr` alone does not exercise this path: that command
+also refreshes server geometry that can otherwise remain stale in Xephyr.
+
 ## Developing against WINGs
 
 The demos under `lib/WINGs/Tests` and `lib/WINGs/Examples` are the fastest way
@@ -199,7 +211,7 @@ cc myapp.c $(pkg-config --cflags --libs WINGs wrlib) -o myapp
 | `WMAKER_MODELOCK` | `OFF` | XKB language modelock |
 | `WMAKER_WMREPLACE` | `OFF` | ICCCM window-manager replacement |
 | `WMAKER_USERMENU` | `OFF` | Per-application user menus |
-| `WMAKER_RANDR` | `OFF` | RandR extension |
+| `WMAKER_RANDR` | `ON` | Live screen and monitor layout updates through RandR |
 | `WMAKER_PANGO` | `OFF` | Pango text layout in WINGs |
 | `WMAKER_MAGICK` | `OFF` | MagickWand image loading |
 | `WMAKER_NLS` | `ON` | Compile translations |
@@ -208,8 +220,9 @@ cc myapp.c $(pkg-config --cflags --libs WINGs wrlib) -o myapp
 | `WMAKER_BUILD_WMLIB` | `ON` | Build libWMaker |
 | `WMAKER_BUILD_EXAMPLES` | `ON` | Build the WINGs demos |
 
-The defaults follow `configure.ac`, so a CMake build has the same feature set
-the autotools build would have given you.
+RandR is enabled by default so screen resizing and monitor changes update the
+running desktop. Root-window resize notifications also update screen bounds
+when RandR is unavailable.
 
 ## System install
 

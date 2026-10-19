@@ -1833,6 +1833,11 @@ WDock *wDockRestoreState(WScreen *scr, WMPropList *dock_state, int type)
 			if (sscanf(WMGetFromPLString(value), "%i,%i", &dock->x_pos, &dock->y_pos) != 2)
 				COMPLAIN("Position");
 
+			/* The shipped state uses a negative offset from the right edge.
+			 * Resolve it before choosing which side the Dock belongs to. */
+			if (type == WM_DOCK && dock->x_pos < 0)
+				dock->x_pos += scr->scr_width;
+
 			/* check position sanity */
 			if (!onScreen(scr, dock->x_pos, dock->y_pos)) {
 				int x = dock->x_pos;
@@ -3031,6 +3036,27 @@ static void moveDock(WDock *dock, int new_x, int new_y)
 			XMoveWindow(dpy, btn->icon->core->window, btn->x_pos, btn->y_pos);
 		}
 	}
+}
+
+void wDockUpdateGeometry(WDock *dock)
+{
+	WScreen *scr = dock->screen_ptr;
+	int capacity = dock->type == WM_DRAWER ? scr->scr_width / ICON_SIZE : scr->scr_height / ICON_SIZE;
+	int x = dock->x_pos;
+	int y = WMAX(0, WMIN(dock->y_pos, scr->scr_height - ICON_SIZE));
+
+	/* Grow storage with the screen; retain occupied slots when shrinking. */
+	if (dock->type != WM_CLIP && capacity > dock->max_icons) {
+		dock->icon_array = wrealloc(dock->icon_array, capacity * sizeof(WAppIcon *));
+		memset(dock->icon_array + dock->max_icons, 0,
+		       (capacity - dock->max_icons) * sizeof(WAppIcon *));
+		dock->max_icons = capacity;
+	}
+	if (dock->type == WM_DOCK)
+		x = getDockXPosition(scr, dock->on_right_side);
+	else
+		x = WMAX(0, WMIN(x, scr->scr_width - ICON_SIZE));
+	moveDock(dock, x, y);
 }
 
 void wDockSwap(WDock *dock)

@@ -270,12 +270,18 @@ void DispatchEvent(XEvent * event)
 		handleVisibilityNotify(event);
 		break;
 
-	case ConfigureNotify:
+	case ConfigureNotify: {
+		WScreen *scr = wScreenForRootWindow(event->xconfigure.window);
+
+		/* wScreenForRootWindow also accepts client windows. */
+		if (scr && event->xconfigure.window == scr->root_win) {
 #ifdef USE_RANDR
-		if (event->xconfigure.window == DefaultRootWindow(dpy))
 			XRRUpdateConfiguration(event);
 #endif
+			wScreenUpdateGeometry(scr);
+		}
 		break;
+	}
 
 	case SelectionRequest:
 		handle_selection_request(&event->xselectionrequest);
@@ -575,14 +581,13 @@ static void handleExtensions(XEvent * event)
 	}
 #endif				/*KEEP_XKB_LOCK_STATUS */
 #ifdef USE_RANDR
-	if (w_global.xext.randr.supported && event->type == (w_global.xext.randr.event_base + RRScreenChangeNotify)) {
+	if (w_global.xext.randr.supported && (event->type == (w_global.xext.randr.event_base + RRScreenChangeNotify) ||
+	     event->type == (w_global.xext.randr.event_base + RRNotify))) {
 		/* From xrandr man page: "Clients must call back into Xlib using
 		 * XRRUpdateConfiguration when screen configuration change notify
 		 * events are generated */
 		XRRUpdateConfiguration(event);
-		WCHANGE_STATE(WSTATE_RESTARTING);
-		Shutdown(WSRestartPreparationMode);
-		Restart(NULL,True);
+		wScreenUpdateGeometry(wScreenForRootWindow(event->xany.window));
 	}
 #endif
 }

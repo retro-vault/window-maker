@@ -30,6 +30,10 @@
 #include "placement.h"
 #include "dock.h"
 
+#ifdef USE_RANDR
+#include <X11/extensions/Xrandr.h>
+#endif
+
 #ifdef USE_XINERAMA
 # ifdef SOLARIS_XINERAMA	/* sucks */
 #  include <X11/extensions/xinerama.h>
@@ -40,9 +44,23 @@
 
 void wInitXinerama(WScreen * scr)
 {
+	/* This is also called when the monitor layout changes. */
+	if (scr->xine_info.screens)
+		wfree(scr->xine_info.screens);
 	scr->xine_info.primary_head = 0;
 	scr->xine_info.screens = NULL;
 	scr->xine_info.count = 0;
+#ifdef USE_RANDR
+	if (w_global.xext.randr.supported) {
+		/* Force a fresh server probe before querying heads. In Xephyr an
+		 * interactive root resize can leave the RandR CRTC, Xinerama and
+		 * pointer limits stale until GetScreenResources refreshes them.
+		 * GetScreenResourcesCurrent deliberately skips that refresh. */
+		XRRScreenResources *resources = XRRGetScreenResources(dpy, scr->root_win);
+		if (resources)
+			XRRFreeScreenResources(resources);
+	}
+#endif
 #ifdef USE_XINERAMA
 # ifdef SOLARIS_XINERAMA
 	if (XineramaGetState(dpy, scr->screen)) {
@@ -83,6 +101,38 @@ void wInitXinerama(WScreen * scr)
 	}
 # endif				/* !SOLARIS_XINERAMA */
 #endif				/* USE_XINERAMA */
+#ifdef USE_RANDR
+	if (w_global.xext.randr.supported && scr->xine_info.count) {
+		int major, minor;
+		/* Output-primary requests were added in RandR 1.3. */
+		if (XRRQueryVersion(dpy, &major, &minor) &&
+		    (major > 1 || (major == 1 && minor >= 3))) {
+			RROutput primary = XRRGetOutputPrimary(dpy, scr->root_win);
+			XRROutputInfo *output = NULL;
+			XRRScreenResources *resources = XRRGetScreenResourcesCurrent(dpy, scr->root_win);
+			if (resources && primary != None)
+				output = XRRGetOutputInfo(dpy, resources, primary);
+			if (output && output->crtc != None) {
+				XRRCrtcInfo *crtc = XRRGetCrtcInfo(dpy, resources, output->crtc);
+				if (crtc) {
+					int i;
+					for (i = 0; i < scr->xine_info.count; i++) {
+						WMRect rect = scr->xine_info.screens[i];
+						if (rect.pos.x == crtc->x && rect.pos.y == crtc->y) {
+							scr->xine_info.primary_head = i;
+							break;
+						}
+					}
+					XRRFreeCrtcInfo(crtc);
+				}
+			}
+			if (output)
+				XRRFreeOutputInfo(output);
+			if (resources)
+				XRRFreeScreenResources(resources);
+		}
+	}
+#endif
 }
 
 int wGetRectPlacementInfo(WScreen * scr, WMRect rect, int *flags)

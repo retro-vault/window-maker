@@ -158,7 +158,7 @@ void WMSetViewNextResponder(WMView * view, WMView * responder)
 
 void WMRelayToNextResponder(WMView * view, XEvent * event)
 {
-	unsigned long mask = eventMasks[event->xany.type];
+	unsigned long mask = event->type >= 0 && event->type < LASTEvent ? eventMasks[event->type] : 0;
 
 	if (view->nextResponder) {
 		WMView *next = view->nextResponder;
@@ -190,7 +190,15 @@ int WMHandleEvent(XEvent * event)
 		return False;
 	}
 
-	mask = eventMasks[event->xany.type];
+	/* Extension events have no entry in the core event-mask table. Let
+	 * the window manager handle RandR and other extension notifications. */
+	if (event->type < 0 || event->type >= LASTEvent) {
+		if (extraEventHandler)
+			extraEventHandler(event);
+		return False;
+	}
+
+	mask = eventMasks[event->type];
 
 	window = event->xany.window;
 
